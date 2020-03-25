@@ -1,0 +1,31 @@
+#Functionality
+-Check of nearby "squares" to check for "people"
+  -used for movement (stop people walking into each other)
+  -used for infection
+-impliment infection between people
+-add death chance (mild, critical?)
+-add hospitals
+-use of R^0
+-Size of grid change
+
+#ui
+-options for
+  -amount of people
+  -infection chance
+  -distance of infection
+  -size of grid
+-pause / play Simulation
+-simulation speed
+-
+
+#visual feedback
+-number of
+  -infected
+    -mild
+    -critical
+    -severe
+    -death
+  -uninfected
+  -recovered
+  -hospital count
+  -infection rate over time
