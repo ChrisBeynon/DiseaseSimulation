@@ -4,15 +4,21 @@ require 'ruby2d'
 #Should be fairly obvious
 set background: 'black'
 #set FPS
-set fps_cap: 10;
+set fps_cap: 5;
+#set title
+set title: "Diesease spread simulation"
+
+
+
 #Grid size is used to set the size of the grid based on screen size
 GRID_SIZE = 20
 
 #creating the class of person
 class Person
   #When initialize the initial x and y position on the screen is set
-  def initialize (posX, posY)
+  def initialize (posX, posY, healthStatus)
     @position = [posX,posY]
+    @health = healthStatus
   end
 
   #draws a square to the screen using the initial x and y coordinates
@@ -47,21 +53,38 @@ end
 
 
 
-#creates a new "Person" object
-person1 = Person.new(1,4)
-#Draws the person object to the screen
-person1.draw
+
+#------------------------------------------------------------------------------#
+#Simulation variables
+infectionDistance = 1
+infectionChance = 0.5
+simulatedAmount = 100
+
+#Array used to store the array of "people"
+personObjectsArray = []
 
 
+#Creates a "Person" for each of the simulated "people"
+for i in 1 .. simulatedAmount do
+  i = Person.new(rand(5..10),rand(5..10),"Healthy")
+
+  #Stores the "persons" information into the array
+  personObjectsArray << i
+end
+
+#------------------------------------------------------------------------------#
+#Screen generation
 
 
 #runs each frame
 update do
   #clears the screen
   clear
-  #moves the person in a random direction
-  person1.moveRandom
-  person1.draw
+  #moves all persons in a random direction
+  personObjectsArray.each { |person|
+    person.moveRandom
+    person.draw
+  }
 end
 
 show
