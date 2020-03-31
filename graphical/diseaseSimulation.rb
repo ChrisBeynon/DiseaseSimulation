@@ -49,6 +49,20 @@ class Person
     end
   end
 
+  def contains?
+      #direction = right
+      if contains? (@position[0]+1) == true
+        puts "colission dected"
+      end
+      @position[0] +1
+      #direction = down
+      @position[1] +1
+      #direction = left
+      @position[0] -1
+      #direction = up
+      @position[1] -1
+
+  end
 end
 
 
@@ -60,17 +74,9 @@ infectionDistance = 1
 infectionChance = 0.5
 simulatedAmount = 100
 
-#Array used to store the array of "people"
-personObjectsArray = []
+#Array creates and stored simlated amount of people
+personObjectsArray = Array.new(simulatedAmount) {Person.new(rand(20),rand(20),"healthy")}
 
-
-#Creates a "Person" for each of the simulated "people"
-for i in 1 .. simulatedAmount do
-  i = Person.new(rand(5..10),rand(5..10),"Healthy")
-
-  #Stores the "persons" information into the array
-  personObjectsArray << i
-end
 
 #------------------------------------------------------------------------------#
 #Screen generation
@@ -83,6 +89,7 @@ update do
   #moves all persons in a random direction
   personObjectsArray.each { |person|
     person.moveRandom
+    #person.contains?
     person.draw
   }
 end
