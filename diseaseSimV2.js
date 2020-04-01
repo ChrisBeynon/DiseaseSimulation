@@ -33,7 +33,7 @@ var gridSize = 50;
 var gridArray = [];
 
 //Number of "people" to simulate.
-var peopleCount = 10;
+var peopleCount = 50;
 
 //----------Visual variable setup----------//
 
@@ -79,7 +79,7 @@ for (var i = 0; i < gridSize; i++) {
 
     //ctx.fillRect(i * positionMultiplier, x * positionMultiplier, squareSize, squareSize);
     if (gridArray[i][x] == 1) {
-      draw(i * positionMultiplier, x * positionMultiplier, squareSize, squareSize, "blue");
+      draw();
     }
   };
 };
@@ -88,34 +88,84 @@ for (var i = 0; i < gridSize; i++) {
 
 //----------Simulation Functions----------//
 
-function draw(x,y,width,height,color) {
+function draw() {
 
-  if (color == "blue") {
-    ctx.fillStyle = 'rgb(0, 0, 250)';
-    ctx.fillRect(x, y, width, height);
-  }
-  if (color == "red") {
-    ctx.fillStyle = 'rgb(250, 0, 0)';
-    ctx.fillRect(x, y, width, height);
-  }
-  if (color == "green") {
-    ctx.fillStyle = 'rgb(0, 250, 0)';
-    ctx.fillRect(x, y, width, height);
-  }
-  if (color == "black") {
-    ctx.fillStyle = 'rgb(250, 250, 250)';
-    ctx.fillRect(x, y, width, height);
-  }
-}
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  for (var i = 0; i < gridSize; i++) {
+    for (var x = 0; x < gridSize; x++) {
+      if (gridArray[i][x] == 1) {
+        ctx.fillStyle = 'rgb(0, 0, 250)';
+        ctx.fillRect(i * positionMultiplier, x * positionMultiplier, squareSize, squareSize);
+      };
+      if (gridArray[i][x] == 2) {
+        ctx.fillStyle = 'rgb(250, 0, 0)';
+        ctx.fillRect(i * positionMultiplier, x * positionMultiplier, squareSize, squareSize);
+      };
+      if (gridArray[i][x] == 3) {
+        ctx.fillStyle = 'rgb(0, 250, 0)';
+        ctx.fillRect(i * positionMultiplier, x * positionMultiplier, squareSize, squareSize);
+      };
+      if (gridArray[i][x] == 4) {
+        ctx.fillStyle = 'rgb(0, 0, 0)';
+        ctx.fillRect(i * positionMultiplier, x * positionMultiplier, squareSize, squareSize);
+      };
+    };
+  };
+};
+
 
 
 function peopleMove() {
-  
-}
+  //
+  for (var i = 0; i < gridSize; i++) {
+    for (var x = 0; x < gridSize; x++) {
+      //picks a random direction to move the square.
+      if (gridArray[i][x] != 0) {
+        direction = Math.floor(Math.random() * Math.floor(5));
+        if (direction == 1){
+          //up
+          //row -1
+          //check if edge of grid
 
+          //move.(set current to 0)
+          gridArray[i][x] = 0;
+          gridArray[i][x-1] = 1;
+        };
+        if (direction == 2){
+          //right
+          //column +1
+          //check if edge of grid
 
+          //move.(set current to 0)
+          gridArray[i][x] = 0;
+          gridArray[i+1][x] = 1;
+        };
+        if (direction == 3){
+          //down
+          //row +1
+          //check if edge of grid
 
+          //move.(set current to 0)
+          gridArray[i][x] = 0;
+          gridArray[i][x+1] = 1;
+        };
+        if (direction == 4){
+          //left
+          //column -1
+          //check if edge of grid
 
+          //move.(set current to 0)
+          gridArray[i][x] = 0;
+          gridArray[i-1][x] = 1;
+        };
+      };
+    };
+  };
+  draw()
+};
+
+var intervalID = window.setInterval(peopleMove, 500);
 
 
 
