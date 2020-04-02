@@ -26,20 +26,20 @@ canvas.height = pageCanvasSize;
 
 //Setting the grid size that will be used for the simulation.
 //Means that the width/height of the canvas will be divided into 10 sections.
-var gridSize = 50;
+var gridSize = 10;
 
 //Initalises the Array used to store the grid.
 //This will be a 2d array to store rows and columns.
 var gridArray = [];
 
 //Number of "people" to simulate.
-var peopleCount = 3;
+var peopleCount = 10;
 
 //Setting the initial amount of infected people.
 var initialInfections = 2;
 
 //Chance of a person being infected.(in %).
-var infectionChance = 10;
+var infectionChance = 100;
 
 //----------Visual variable setup----------//
 
@@ -218,6 +218,22 @@ function attemptInfection() {
         //check if infecting
         if (infectionRandom <= infectionChance) {
           console.log('infection');
+          //infect above
+          if (checkIfOccupied(i,x-1) == true && checkIfEdge(i,x) == false) {
+            gridArray[i][x-1] = 2;
+          };
+          //infect right
+          if (checkIfOccupied(i+1,x) == true && checkIfEdge(i,x) == false) {
+            gridArray[i+1][x] = 2;
+          };
+          //infect down
+          if (checkIfOccupied(i,x+1) == true && checkIfEdge(i,x) == false) {
+            gridArray[i][x+1] = 2;
+          };
+          //infect left
+          if (checkIfOccupied(i-1,x) == true && checkIfEdge(i,x) == false) {
+            gridArray[i-1][x] = 2;
+          };
         }
         else {
           console.log('not infected')
