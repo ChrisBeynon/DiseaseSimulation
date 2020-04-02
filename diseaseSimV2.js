@@ -26,17 +26,17 @@ canvas.height = pageCanvasSize;
 
 //Setting the grid size that will be used for the simulation.
 //Means that the width/height of the canvas will be divided into 10 sections.
-var gridSize = 10;
+var gridSize = 50;
 
 //Initalises the Array used to store the grid.
 //This will be a 2d array to store rows and columns.
 var gridArray = [];
 
 //Number of "people" to simulate.
-var peopleCount = 10;
+var peopleCount = 1;
 
 //Setting the initial amount of infected people.
-var initialInfections = 2;
+var initialInfections = 0;
 
 //Chance of a person being infected.(in %).
 var infectionChance = 100;
@@ -104,15 +104,17 @@ function draw() {
 
   for (var i = 0; i < gridSize; i++) {
     for (var x = 0; x < gridSize; x++) {
+      //console.log('drawing:');
+      //console.log(gridArray[i][x]);
       if (gridArray[i][x] == 1) {
         ctx.fillStyle = 'rgb(0, 0, 250)';
         ctx.fillRect(i * positionMultiplier, x * positionMultiplier, squareSize, squareSize);
-        console.log('blue drawn');
+        //console.log('blue drawn');
       };
       if (gridArray[i][x] == 2) {
         ctx.fillStyle = 'rgb(250, 0, 0)';
         ctx.fillRect(i * positionMultiplier, x * positionMultiplier, squareSize, squareSize);
-        console.log('red drawn');
+        //console.log('red drawn');
       };
       if (gridArray[i][x] == 3) {
         ctx.fillStyle = 'rgb(0, 250, 0)';
@@ -139,44 +141,87 @@ function peopleMove() {
         direction = Math.floor(Math.random() * Math.floor(5));
         if (direction == 1){
 
-          if (checkIfOccupied(i,x-1) == false && checkIfEdge(i,x) == false) {
-            gridArray[i][x] = 0;
-            gridArray[i][x-1] = currentStatus;
+
+          //if (checkIfOccupied(i,x-1) == false && checkIfEdge(i,x) == false) {
+          //  gridArray[i][x] = 0;
+          //  gridArray[i][x-1] = currentStatus;
+          //};
+          if (checkIfEdge(i,x-1) == false) {
+            if (checkIfOccupied(i,x-1) == false) {
+              gridArray[i][x] = 0;
+              gridArray[i][x-1] = currentStatus;
+            };
           };
+
+
         };
         if (direction == 2){
           //right
           //column +1
           //check if edge of grid
-          if (checkIfOccupied(i+1,x) == false && checkIfEdge(i,x) == false) {
+
+
+          //if (checkIfOccupied(i+1,x) == false && checkIfEdge(i,x) == false) {
             //console.log("not occupied")
-            gridArray[i][x] = 0;
-            gridArray[i+1][x] = currentStatus;
+          //  gridArray[i][x] = 0;
+          //  gridArray[i+1][x] = currentStatus;
+          //};
+
+          if (checkIfEdge(i+1,x) == false) {
+            if (checkIfOccupied(i+1,x) == false) {
+              gridArray[i][x] = 0;
+              gridArray[i+1][x] = currentStatus;
+            };
           };
+
+
           //move.(set current to 0)
         };
         if (direction == 3){
           //down
           //row +1
           //check if edge of grid
-          if (checkIfOccupied(i,x+1) == false && checkIfEdge(i,x) == false) {
+
+
+
+          //if (checkIfOccupied(i,x+1) == false && checkIfEdge(i,x) == false) {
             //console.log("not occupied")
-            gridArray[i][x] = 0;
-            gridArray[i][x+1] = currentStatus;
-          };
+          //  gridArray[i][x] = 0;
+          //  gridArray[i][x+1] = currentStatus;
+          //};
           //move.(set current to 0)
+
+          if (checkIfEdge(i,x+1) == false) {
+            if (checkIfOccupied(i,x+1) == false) {
+              gridArray[i][x] = 0;
+              gridArray[i][x+11] = currentStatus;
+            };
+          };
+
 
         };
         if (direction == 4){
           //left
           //column -1
           //check if edge of grid
-          if (checkIfOccupied(i-1,x) == false && checkIfEdge(i,x) == false) {
+
+
+          //if (checkIfOccupied(i-1,x) == false && checkIfEdge(i,x) == false) {
             //console.log("not occupied")
-            gridArray[i][x] = 0;
-            gridArray[i-1][x] = currentStatus;
-          };
+          //  gridArray[i][x] = 0;
+          //  gridArray[i-1][x] = currentStatus;
+          //};
           //move.(set current to 0)
+
+          if (checkIfEdge(i-1,x) == false) {
+            if (checkIfOccupied(i-1,x) == false) {
+              gridArray[i][x] = 0;
+              gridArray[i-1][x] = currentStatus;
+            };
+          };
+
+
+
 
         };
       };
@@ -198,10 +243,10 @@ function checkIfOccupied(nextX, nextY) {
 function checkIfEdge(nextX, nextY) {
   //Check if edge of grid
   //if <0 = edge && >gridSize
-  if (gridArray[nextX][nextY] < gridSize && gridArray[nextX][nextY] >= 0) {
+  if ((nextX < gridSize && nextX >= 0) || (nextY < gridSize && nextY >= 0)) {
     return false
   };
-  if ((gridArray[nextX][nextY] >= gridSize) && (gridArray[nextX][nextY] < 0)) {
+  if ((nextX > gridSize && nextX < 0) || (nextY > gridSize && nextY < 0)) {
     return true
   };
 
@@ -256,8 +301,5 @@ function main() {
   draw();
 };
 //----------Runnign simulation----------//
-var intervalID = window.setInterval(main, 500);
-
-
-
+var intervalID = window.setInterval(main, 1000);
 //
