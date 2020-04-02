@@ -33,7 +33,13 @@ var gridSize = 50;
 var gridArray = [];
 
 //Number of "people" to simulate.
-var peopleCount = 50;
+var peopleCount = 3;
+
+//Setting the initial amount of infected people.
+var initialInfections = 2;
+
+//Chance of a person being infected.(in %).
+var infectionChance = 10;
 
 //----------Visual variable setup----------//
 
@@ -63,26 +69,30 @@ for (var i=0; i <gridSize; i++){
 }
 
 //Randomising the initial position of "people".
+//TODO check if the grid position is occupied before making.
 
-for (var i = 0; i < peopleCount; i++) {
+for (var i = 0; i < (peopleCount - initialInfections); i++) {
   initialPersonCol = Math.floor(Math.random() * Math.floor(gridSize));
   initialPersonRow = Math.floor(Math.random() * Math.floor(gridSize));
   gridArray[initialPersonCol][initialPersonRow] = 1;
 }
-
+for (var i = 0; i < initialInfections; i++) {
+  initialPersonCol = Math.floor(Math.random() * Math.floor(gridSize));
+  initialPersonRow = Math.floor(Math.random() * Math.floor(gridSize));
+  gridArray[initialPersonCol][initialPersonRow] = 2;
+}
 
 //----------Initial draw to canvas----------//
 
-for (var i = 0; i < gridSize; i++) {
-  for (var x = 0; x < gridSize; x++) {
-    console.log(gridArray[i][x]);
-
-    //ctx.fillRect(i * positionMultiplier, x * positionMultiplier, squareSize, squareSize);
-    if (gridArray[i][x] == 1) {
-      draw();
-    }
-  };
-};
+//for (var i = 0; i < gridSize; i++) {
+//  for (var x = 0; x < gridSize; x++) {
+//    //console.log(gridArray[i][x]);
+//    //ctx.fillRect(i * positionMultiplier, x * positionMultiplier, squareSize, squareSize);
+//    if (gridArray[i][x] != 0) {
+//      draw();
+//    }
+//  };
+//};
 
 //----------Simulation----------//
 
@@ -97,10 +107,12 @@ function draw() {
       if (gridArray[i][x] == 1) {
         ctx.fillStyle = 'rgb(0, 0, 250)';
         ctx.fillRect(i * positionMultiplier, x * positionMultiplier, squareSize, squareSize);
+        console.log('blue drawn');
       };
       if (gridArray[i][x] == 2) {
         ctx.fillStyle = 'rgb(250, 0, 0)';
         ctx.fillRect(i * positionMultiplier, x * positionMultiplier, squareSize, squareSize);
+        console.log('red drawn');
       };
       if (gridArray[i][x] == 3) {
         ctx.fillStyle = 'rgb(0, 250, 0)';
@@ -121,51 +133,114 @@ function peopleMove() {
   for (var i = 0; i < gridSize; i++) {
     for (var x = 0; x < gridSize; x++) {
       //picks a random direction to move the square.
+      var currentStatus = gridArray[i][x];
+      //TODO CHANGE TO CASE STATEMENT.
       if (gridArray[i][x] != 0) {
         direction = Math.floor(Math.random() * Math.floor(5));
         if (direction == 1){
-          //up
-          //row -1
-          //check if edge of grid
 
-          //move.(set current to 0)
-          gridArray[i][x] = 0;
-          gridArray[i][x-1] = 1;
+          if (checkIfOccupied(i,x-1) == false && checkIfEdge(i,x) == false) {
+            gridArray[i][x] = 0;
+            gridArray[i][x-1] = currentStatus;
+          };
         };
         if (direction == 2){
           //right
           //column +1
           //check if edge of grid
-
+          if (checkIfOccupied(i+1,x) == false && checkIfEdge(i,x) == false) {
+            //console.log("not occupied")
+            gridArray[i][x] = 0;
+            gridArray[i+1][x] = currentStatus;
+          };
           //move.(set current to 0)
-          gridArray[i][x] = 0;
-          gridArray[i+1][x] = 1;
         };
         if (direction == 3){
           //down
           //row +1
           //check if edge of grid
-
+          if (checkIfOccupied(i,x+1) == false && checkIfEdge(i,x) == false) {
+            //console.log("not occupied")
+            gridArray[i][x] = 0;
+            gridArray[i][x+1] = currentStatus;
+          };
           //move.(set current to 0)
-          gridArray[i][x] = 0;
-          gridArray[i][x+1] = 1;
+
         };
         if (direction == 4){
           //left
           //column -1
           //check if edge of grid
-
+          if (checkIfOccupied(i-1,x) == false && checkIfEdge(i,x) == false) {
+            //console.log("not occupied")
+            gridArray[i][x] = 0;
+            gridArray[i-1][x] = currentStatus;
+          };
           //move.(set current to 0)
-          gridArray[i][x] = 0;
-          gridArray[i-1][x] = 1;
+
         };
       };
     };
   };
-  draw()
 };
 
-var intervalID = window.setInterval(peopleMove, 500);
+function checkIfOccupied(nextX, nextY) {
+  //Check if grid is occupied
+  //If != 0 = occupied
+  if (gridArray[nextX][nextY] == 0) {
+    return false
+  };
+  if (gridArray[nextX][nextY] != 0) {
+    return true
+  };
+}
+
+function checkIfEdge(nextX, nextY) {
+  //Check if edge of grid
+  //if <0 = edge && >gridSize
+  if (gridArray[nextX][nextY] < gridSize && gridArray[nextX][nextY] >= 0) {
+    return false
+  };
+  if ((gridArray[nextX][nextY] >= gridSize) && (gridArray[nextX][nextY] < 0)) {
+    return true
+  };
+
+};
+
+function attemptInfection() {
+  //if infected (==2) check infectionChance,if does infect check all directions and infect
+  min = Math.ceil(0);
+  max = Math.floor(100);
+  for (var i = 0; i < gridSize; i++) {
+    for (var x = 0; x < gridSize; x++) {
+      if (gridArray[i][x] == 2) {
+        infectionRandom = Math.floor(Math.random() * (max - min + 1)) + min;
+        //check if infecting
+        if (infectionRandom <= infectionChance) {
+          console.log('infection');
+        }
+        else {
+          console.log('not infected')
+        };
+      };
+    };
+  };
+
+
+
+
+
+};
+
+
+
+function main() {
+  peopleMove();
+  attemptInfection();
+  draw();
+};
+//----------Runnign simulation----------//
+var intervalID = window.setInterval(main, 500);
 
 
 
